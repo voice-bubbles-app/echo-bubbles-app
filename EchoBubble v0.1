@@ -1,0 +1,22 @@
+EchoBubble v0.1
+
+What’s new
+- Consent screen before any synthesis
+- First-tap voice picker per sender (saved mapping)
+- Foreground bubble overlay (reliable on Android 8+)
+- Auto-start overlay when a new message arrives
+- Proper notification channel for playback
+- One-click build + install scripts (Windows/Linux/macOS)
+
+How to install (quick)
+1) Run the TTS server on your PC (uvicorn app:app --host 0.0.0.0 --port 8000)
+2) adb reverse tcp:8000 tcp:8000
+3) Set Api.kt base URL to http://127.0.0.1:8000
+4) Install app-debug.apk
+5) Open app → Accept consent → Grant Notification Access + Draw Over Apps
+6) Share a voice note to EchoBubble to create a voice → tap bubble on new messages
+
+Notes
+- Local and free if you run the TTS server yourself (XTTS v2)
+- On Android 9+, allow cleartext or use HTTPS (ngrok works)
+- Debug: a button in the app can start the bubble manually
