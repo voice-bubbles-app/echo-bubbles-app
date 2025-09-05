@@ -1,0 +1,59 @@
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.ui.platform.LocalContext
+import com.echobubble.overlay.BubbleService
+import com.echobubble.BuildConfig
+
+@Composable
+fun Onboarding() {
+    val ctx = LocalContext.current
+    Column(Modifier.padding(24.dp)) {
+        // ... existing onboarding UI ...
+
+        // Ask for POST_NOTIFICATIONS on Android 13+
+        RequestPostNotificationsIfNeeded()
+
+        if (BuildConfig.DEBUG) {
+            Spacer(Modifier.height(16.dp))
+            OutlinedButton(onClick = {
+                if (!Settings.canDrawOverlays(ctx)) {
+                    Toast.makeText(ctx, "Enable 'Draw over other apps' first.", Toast.LENGTH_SHORT).show()
+                    return@OutlinedButton
+                }
+                val intent = Intent(ctx, BubbleService::class.java)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    ctx.startForegroundService(intent)
+                else
+                    ctx.startService(intent)
+            }) {
+                Text("Start Bubble (Debug)")
+            }
+        }
+    }
+}
+
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.*
+
+@Composable
+private fun RequestPostNotificationsIfNeeded() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val ctx = androidx.compose.ui.platform.LocalContext.current
+        val perm = android.Manifest.permission.POST_NOTIFICATIONS
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { }
+        )
+        LaunchedEffect(Unit) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(ctx, perm)
+                != PackageManager.PERMISSION_GRANTED
+            ) launcher.launch(perm)
+        }
+    }
+}
