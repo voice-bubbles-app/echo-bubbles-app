@@ -1,0 +1,28 @@
+# Android / Gradle
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+**/build/
+.cxx/
+.externalNativeBuild/
+
+# Android outputs
+*.apk
+*.aab
+android/app/build/
+android/app/release/
+android/app/debug/
+
+# Python server env
+server/.venv/
+server/__pycache__/
+__pycache__/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
